@@ -1,8 +1,9 @@
-#include "GLUtils.h"
+#include <GLFont/GLUtils.h>
 #include <algorithm>
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <stdexcept>
 
 GLUtils::GLUtils() {}
 
@@ -21,7 +22,7 @@ void GLUtils::loadShader(char* shaderSource, GLenum shaderType, GLuint &programI
 
     if(!shaderFile.is_open()) {
         std::string error = "Error: could not read file ";
-        throw std::exception(error.append(shaderSource).c_str());
+        throw std::runtime_error(error.append(shaderSource).c_str());
     }
 
     // Read shader

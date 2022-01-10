@@ -1,6 +1,7 @@
-#pragma once
+#ifndef GLFONT_GLUTILS_H
+#define GLFONT_GLUTILS_H
 
-#include "GL\glew.h"
+#include <GLFont/GLConfig.h>
 
 class GLUtils {
 public:
@@ -9,4 +10,5 @@ public:
 
     static void loadShader(char* shaderSource, GLenum shaderType, GLuint &programId);
 };
+#endif //GLFONT_GLUTILS_H
 

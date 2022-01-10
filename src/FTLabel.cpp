@@ -1,6 +1,6 @@
-#include "FTLabel.h"
-#include "GLUtils.h"
-#include "FontAtlas.h"
+#include <GLFont/FTLabel.h>
+#include <GLFont/GLUtils.h>
+#include <GLFont/FontAtlas.h>
 
 #include <stdio.h>
 #include <vector>
@@ -9,8 +9,8 @@
 #include <algorithm>
 
 // GLM
-#include "glm\gtc\type_ptr.hpp"
-#include "glm\gtx\transform.hpp"
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/transform.hpp>
 
 FTLabel::FTLabel(shared_ptr<GLFont> ftFace, int windowWidth, int windowHeight) :
   _isInitialized(false),
@@ -30,7 +30,7 @@ FTLabel::FTLabel(shared_ptr<GLFont> ftFace, int windowWidth, int windowHeight) :
     // Intially enabled flags
     _flags = FontFlags::LeftAligned | FontFlags::WordWrap;
 
-    // Since we are dealing with 2D text, we will use an orthographic projection matrix 
+    // Since we are dealing with 2D text, we will use an orthographic projection matrix
     _projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, // View: left, right, bottom, top (we are using normalized coords)
                              0.1f,                     // Near clipping distance
                              100.0f);                  // Far clipping distance
@@ -81,8 +81,8 @@ FTLabel::FTLabel(shared_ptr<GLFont> ftFace, int windowWidth, int windowHeight) :
     _isInitialized = true;
 }
 
-FTLabel::FTLabel(GLFont* ftFace, int windowWidth, int windowHeight) : 
-  FTLabel(std::shared_ptr<GLFont>(new GLFont(*ftFace)), windowWidth, windowHeight) 
+FTLabel::FTLabel(GLFont* ftFace, int windowWidth, int windowHeight) :
+  FTLabel(std::shared_ptr<GLFont>(new GLFont(*ftFace)), windowWidth, windowHeight)
 {}
 
 FTLabel::FTLabel(shared_ptr<GLFont> ftFace, const char* text, float x, float y, int width, int height, int windowWidth, int windowHeight) :
@@ -108,7 +108,7 @@ FTLabel::~FTLabel() {
 }
 
 void FTLabel::recalculateVertices(const char* text, float x, float y, int width, int height) {
-    
+
     _coords.clear(); // case there are any existing coords
 
     // Break the text into individual words
@@ -203,7 +203,7 @@ void FTLabel::recalculateVertices(const char* text, float x, float y) {
     x = -1 + x * _sx;
     y = 1 - y * _sy;
 
-    
+
     int atlasWidth = _fontAtlas[_pixelSize]->getAtlasWidth();
     int atlasHeight = _fontAtlas[_pixelSize]->getAtlasHeight();
 
@@ -437,7 +437,7 @@ void FTLabel::calculateAlignment(const char* text, float &x) {
     FT_GlyphSlot slot = _face->glyph;
     int totalWidth = 0; // total width of the text to render in window space
     FontAtlas::Character* chars = _fontAtlas[_pixelSize]->getCharInfo();
-   
+
     // Calculate total width
     for(const char* p = text; *p; ++p)
         totalWidth += chars[*p].advanceX;
@@ -467,7 +467,7 @@ void FTLabel::setWindowSize(int width, int height) {
     // Recalculate sx and sy
     _sx = 2.0 / _windowWidth;
     _sy = 2.0 / _windowHeight;
-    
+
     if(_isInitialized) {
         recalculateVertices(_text, _x, _y, _width, _height);
     }

@@ -1,8 +1,7 @@
-#pragma once
+#ifndef GLFONT_H
+#define GLFONT_H
 
-#include "GL\glew.h"
-#include "ft2build.h"
-#include FT_FREETYPE_H
+#include <GLFont/GLConfig.h>
 
 class GLFont {
 public:
@@ -21,3 +20,4 @@ private:
 
 };
 
+#endif //GLFONT_H

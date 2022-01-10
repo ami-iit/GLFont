@@ -1,4 +1,4 @@
-#include "FontAtlas.h"
+#include <GLFont/FontAtlas.h>
 
 #include <algorithm>
 
@@ -35,7 +35,7 @@ FontAtlas::FontAtlas(FT_Face face, int pixelSize) :
     glBindTexture(GL_TEXTURE_2D, _tex);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-    // Set texture parameters 
+    // Set texture parameters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -52,9 +52,9 @@ FontAtlas::FontAtlas(FT_Face face, int pixelSize) :
             continue;
 
         // Add this character glyph to our texture
-        glTexSubImage2D(GL_TEXTURE_2D, 0, texPos, 0, 1, _slot->bitmap.rows, GL_RED, GL_UNSIGNED_BYTE, (char)0); // padding
+        glTexSubImage2D(GL_TEXTURE_2D, 0, texPos, 0, 1, _slot->bitmap.rows, GL_RED, GL_UNSIGNED_BYTE, nullptr); // padding
         glTexSubImage2D(GL_TEXTURE_2D, 0, texPos, 0, _slot->bitmap.width, _slot->bitmap.rows, GL_RED, GL_UNSIGNED_BYTE, _slot->bitmap.buffer);
-        glTexSubImage2D(GL_TEXTURE_2D, 0, texPos, 0, 1, _slot->bitmap.rows, GL_RED, GL_UNSIGNED_BYTE, (char)0); // padding
+        glTexSubImage2D(GL_TEXTURE_2D, 0, texPos, 0, 1, _slot->bitmap.rows, GL_RED, GL_UNSIGNED_BYTE, nullptr); // padding
 
         // Store glyph info in our char array for this pixel size
         _chars[i].advanceX = _slot->advance.x >> 6;

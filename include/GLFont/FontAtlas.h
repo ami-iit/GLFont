@@ -1,8 +1,7 @@
-#pragma once
+#ifndef GLFONT_FONTATLAS_H
+#define GLFONT_FONTATLAS_H
 
-#include "GL\glew.h"
-#include "ft2build.h"
-#include FT_FREETYPE_H
+#include <GLFont/GLConfig.h>
 
 class FontAtlas {
 public:
@@ -37,4 +36,6 @@ private:
     int _width;  // width of texture
     int _height; // height of texture
 };
+
+#endif //GLFONT_FONTATLAS_H
 
