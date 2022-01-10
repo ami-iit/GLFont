@@ -12,7 +12,17 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/transform.hpp>
 
-FTLabel::FTLabel(shared_ptr<GLFont> ftFace, int windowWidth, int windowHeight) :
+#include <cmath>
+
+#ifndef RAD_TO_DEG
+#define RAD_TO_DEG 180.0 / M_PI;
+#endif
+
+#ifndef DEG_TO_RAD
+#define DEG_TO_RAD M_PI / 180.0
+#endif
+
+FTLabel::FTLabel(std::shared_ptr<GLFont> ftFace, int windowWidth, int windowHeight) :
   _isInitialized(false),
   _text(""),
   _alignment(FontFlags::LeftAligned),
@@ -85,7 +95,7 @@ FTLabel::FTLabel(GLFont* ftFace, int windowWidth, int windowHeight) :
   FTLabel(std::shared_ptr<GLFont>(new GLFont(*ftFace)), windowWidth, windowHeight)
 {}
 
-FTLabel::FTLabel(shared_ptr<GLFont> ftFace, const char* text, float x, float y, int width, int height, int windowWidth, int windowHeight) :
+FTLabel::FTLabel(std::shared_ptr<GLFont> ftFace, const char* text, float x, float y, int width, int height, int windowWidth, int windowHeight) :
   FTLabel(ftFace, text, x, y, windowWidth, windowHeight)
 {
     _width = width;
@@ -94,7 +104,7 @@ FTLabel::FTLabel(shared_ptr<GLFont> ftFace, const char* text, float x, float y, 
     recalculateVertices(text, x, y, width, height);
 }
 
-FTLabel::FTLabel(shared_ptr<GLFont> ftFace, const char* text, float x, float y, int windowWidth, int windowHeight) :
+FTLabel::FTLabel(std::shared_ptr<GLFont> ftFace, const char* text, float x, float y, int windowWidth, int windowHeight) :
 FTLabel(ftFace, windowWidth, windowHeight)
 {
     _text = (char*)text;
@@ -107,21 +117,21 @@ FTLabel::~FTLabel() {
     glDeleteVertexArrays(1, &_vao);
 }
 
-void FTLabel::recalculateVertices(const char* text, float x, float y, int width, int height) {
+void FTLabel::recalculateVertices(const std::string& text, float x, float y, int width, int height) {
 
     _coords.clear(); // case there are any existing coords
 
     // Break the text into individual words
-    vector<string> words = splitText(_text);
+    std::vector<std::string> words = splitText(_text);
 
-    vector<string> lines;
+    std::vector<std::string> lines;
     int widthRemaining = width;
     int spaceWidth = calcWidth(" ");
     int indent = (_flags & FontFlags::Indented) && _alignment != FontFlags::CenterAligned ? _pixelSize : 0;
 
     // Create lines from our text, each containing the maximum amount of words we can fit within the given width
-    string curLine = "";
-    for(string word : words) {
+    std::string curLine = "";
+    for(const std::string &word : words) {
         int wordWidth = calcWidth(word.c_str());
 
         if(wordWidth - spaceWidth > widthRemaining && width /* make sure there is a width specified */) {
@@ -147,7 +157,7 @@ void FTLabel::recalculateVertices(const char* text, float x, float y, int width,
 
     // Print each line, increasing the y value as we go
     float startY = y - (_face->size->metrics.height >> 6);
-    for(string line : lines) {
+    for(const std::string &line : lines) {
         // If we go past the specified height, stop drawing
         if(y - startY > height && height)
             break;
@@ -189,8 +199,6 @@ void FTLabel::recalculateVertices(const char* text, float x, float y) {
     // Coordinates passed in should specify where to start drawing from the top left of the text,
     // but FreeType starts drawing from the bottom-right, therefore move down one line
     y += _face->size->metrics.height >> 6;
-
-    FT_GlyphSlot slot = _ftFace->getFaceHandle()->glyph;
 
     // Calculate alignment (if applicable)
     int textWidth = calcWidth(text);
@@ -291,11 +299,10 @@ void FTLabel::render() {
     glUseProgram(0);
 }
 
-vector<string> FTLabel::splitText(const char* text) {
-    string textStr = string(text);
-    vector<string> words;
+std::vector<std::string> FTLabel::splitText(const std::string& text) {
+    std::vector<std::string> words;
     int startPos = 0; // start position of current word
-    int endPos = textStr.find(' '); // end position of current word
+    size_t endPos = text.find(' '); // end position of current word
 
     if(endPos == -1) {
         // There is only one word, so return early
@@ -303,15 +310,15 @@ vector<string> FTLabel::splitText(const char* text) {
         return words;
     }
 
-    // Find each word in the text (delimited by spaces) and add it to our vector of words
-    while(endPos != string::npos) {
-        words.push_back(textStr.substr(startPos, endPos  - startPos + 1));
+    // Find each word in the text (delimited by spaces) and add it to our std::vector of words
+    while(endPos != std::string::npos) {
+        words.push_back(text.substr(startPos, endPos  - startPos + 1));
         startPos = endPos + 1;
-        endPos = textStr.find(' ', startPos);
+        endPos = text.find(' ', startPos);
     }
 
     // Add last word
-    words.push_back(textStr.substr(startPos, std::min(endPos, (int)textStr.size()) - startPos + 1));
+    words.push_back(text.substr(startPos, std::min(endPos, text.size()) - startPos + 1));
 
     return words;
 }
@@ -326,18 +333,14 @@ int FTLabel::calcWidth(const char* text) {
     return width;
 }
 
-void FTLabel::setText(char* text) {
+void FTLabel::setText(const std::string& text) {
     _text = text;
 
     recalculateVertices(_text, _x, _y, _width, _height);
 }
 
-void FTLabel::setText(string text) {
-    setText(text.c_str());
-}
-
-string FTLabel::getText() {
-    return string(_text);
+std::string FTLabel::getText() {
+    return std::string(_text);
 }
 
 void FTLabel::setPosition(float x, float y) {
@@ -409,7 +412,7 @@ glm::vec4 FTLabel::getColor() {
     return _textColor;
 }
 
-void FTLabel::setFont(shared_ptr<GLFont> ftFace) {
+void FTLabel::setFont(std::shared_ptr<GLFont> ftFace) {
     _ftFace = ftFace;
     _face = _ftFace->getFaceHandle(); // shortcut
 }
@@ -434,7 +437,6 @@ void FTLabel::calculateAlignment(const char* text, float &x) {
     if(_alignment == FTLabel::FontFlags::LeftAligned)
         return; // no need to calculate alignment
 
-    FT_GlyphSlot slot = _face->glyph;
     int totalWidth = 0; // total width of the text to render in window space
     FontAtlas::Character* chars = _fontAtlas[_pixelSize]->getCharInfo();
 
