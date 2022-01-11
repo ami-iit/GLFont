@@ -121,6 +121,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC GLEW::GLEW PkgConfig::freetype2 Ope
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_14)
 
+target_compile_definitions(${PROJECT_NAME} PUBLIC GLFont_DEFAULT_FONTS_PATH="${CMAKE_SOURCE_DIR}/fonts")
+
 set_target_properties(${PROJECT_NAME} PROPERTIES
   OUTPUT_NAME ${PROJECT_NAME}
   VERSION ${${PROJECT_NAME}_VERSION}
@@ -153,6 +155,7 @@ write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/GLFontConfigVersion
 
 install(FILES ${CMAKE_BINARY_DIR}/GLFontConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/GLFontConfigVersion.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 
+install(DIRECTORY fonts DESTINATION "${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}")
 
 # Add the uninstall target
 include(AddUninstallTarget)

@@ -1,6 +1,5 @@
 #include "TestWindow.h"
 #include <GLFont/GLFont.h>
-#include <GLFont/FTLabel.h>
 
 TestWindow::TestWindow() {}
 
@@ -16,7 +15,7 @@ void TestWindow::start() {
 
 void TestWindow::init() {
     // Create font face
-    _font = shared_ptr<GLFont>(new GLFont("fonts/13_5Atom_Sans_Regular.ttf"));
+    _font = shared_ptr<GLFont>(new GLFont(GLFont::DefaultFontsPathPrefix() + "/13_5Atom_Sans_Regular.ttf"));
 
     // "Hello world" label
     lblHello = shared_ptr<FTLabel>(new FTLabel(_font, "Hello world", 0.5 * getWidth(), 0.5 * getHeight(), getWidth(), getHeight()));

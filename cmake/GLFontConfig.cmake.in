@@ -20,4 +20,9 @@ if(NOT TARGET GLFont::GLFont)
   include("${CMAKE_CURRENT_LIST_DIR}/GLFontTargets.cmake")
 endif()
 
+get_filename_component(abs_font_path "${CMAKE_CURRENT_LIST_DIR}/../../../share/GLFont/fonts" ABSOLUTE)
 
+## Manually edit the compile definitions to make sure that it finds the installed fonts instead of the source ones
+set_target_properties(GLFont::GLFont PROPERTIES
+  INTERFACE_COMPILE_DEFINITIONS "GLFont_DEFAULT_FONTS_PATH=\"${abs_font_path}\""
+)
