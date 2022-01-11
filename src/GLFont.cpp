@@ -12,14 +12,16 @@ GLFont::GLFont(const char* fontFile) {
     setFontFile(fontFile);
 }
 
-GLFont::~GLFont() {}
+GLFont::~GLFont() {
+    FT_Done_FreeType(_ft);
+}
 
-void GLFont::setFontFile(const char* fontFile) {
-    _fontFile = (char*)fontFile;
+void GLFont::setFontFile(const std::string &fontFile) {
+    _fontFile = fontFile;
 
     // Create a new font
     _error = FT_New_Face(_ft,       // FreeType instance handle
-                         _fontFile, // Font family to use
+                         _fontFile.c_str(), // Font family to use
                          0,         // index of font (in case there are more than one in the file)
                          &_face);   // font face handle
 
