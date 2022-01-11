@@ -55,8 +55,8 @@ FTLabel::FTLabel(std::shared_ptr<GLFont> ftFace, int windowWidth, int windowHeig
 
     // Load the shaders
     _programId = glCreateProgram();
-    GLUtils::loadShader("shaders\\fontVertex.shader", GL_VERTEX_SHADER, _programId);
-    GLUtils::loadShader("shaders\\fontFragment.shader", GL_FRAGMENT_SHADER, _programId);
+    GLUtils::loadShader("shaders/fontVertex.shader", GL_VERTEX_SHADER, _programId);
+    GLUtils::loadShader("shaders/fontFragment.shader", GL_FRAGMENT_SHADER, _programId);
 
     glUseProgram(_programId);
 
@@ -95,7 +95,7 @@ FTLabel::FTLabel(GLFont* ftFace, int windowWidth, int windowHeight) :
   FTLabel(std::shared_ptr<GLFont>(new GLFont(*ftFace)), windowWidth, windowHeight)
 {}
 
-FTLabel::FTLabel(std::shared_ptr<GLFont> ftFace, const char* text, float x, float y, int width, int height, int windowWidth, int windowHeight) :
+FTLabel::FTLabel(std::shared_ptr<GLFont> ftFace, const std::string& text, float x, float y, int width, int height, int windowWidth, int windowHeight) :
   FTLabel(ftFace, text, x, y, windowWidth, windowHeight)
 {
     _width = width;
@@ -104,10 +104,10 @@ FTLabel::FTLabel(std::shared_ptr<GLFont> ftFace, const char* text, float x, floa
     recalculateVertices(text, x, y, width, height);
 }
 
-FTLabel::FTLabel(std::shared_ptr<GLFont> ftFace, const char* text, float x, float y, int windowWidth, int windowHeight) :
+FTLabel::FTLabel(std::shared_ptr<GLFont> ftFace, const std::string &text, float x, float y, int windowWidth, int windowHeight) :
 FTLabel(ftFace, windowWidth, windowHeight)
 {
-    _text = (char*)text;
+    _text = text;
     _x = x;
     _y = y;
 }

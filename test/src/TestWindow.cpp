@@ -1,6 +1,6 @@
 #include "TestWindow.h"
-#include "GLFont.h"
-#include "FTLabel.h"
+#include <GLFont/GLFont.h>
+#include <GLFont/FTLabel.h>
 
 TestWindow::TestWindow() {}
 
@@ -16,7 +16,7 @@ void TestWindow::start() {
 
 void TestWindow::init() {
     // Create font face
-    _font = shared_ptr<GLFont>(new GLFont("fonts\\13_5Atom_Sans_Regular.ttf"));
+    _font = shared_ptr<GLFont>(new GLFont("fonts/13_5Atom_Sans_Regular.ttf"));
 
     // "Hello world" label
     lblHello = shared_ptr<FTLabel>(new FTLabel(_font, "Hello world", 0.5 * getWidth(), 0.5 * getHeight(), getWidth(), getHeight()));
@@ -28,7 +28,7 @@ void TestWindow::init() {
     _labels.push_back(lblHello);
 
     // Paragraph label
-    char* p = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
+    std::string p = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
               "Aliquam quis pellentesque ligula, sed imperdiet tortor. Curabitur eleifend "
               "facilisis orci, a accumsan felis hendrerit in. Duis nec fringilla quam. "
               "Proin accumsan nulla lacus, vel posuere diam imperdiet et. Nunc sed dui "

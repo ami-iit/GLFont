@@ -1,8 +1,23 @@
 #pragma once
 
-#include "GL\glew.h"
-#include "GLFW\glfw3.h"
-#include "glm\glm.hpp"
+#include <GL/glew.h>
+#include <GL/gl.h>
+
+#if defined(_WIN32)
+ #define GLFW_EXPOSE_NATIVE_WIN32
+ #define GLFW_EXPOSE_NATIVE_WGL
+#elif defined(__APPLE__)
+ #define GLFW_EXPOSE_NATIVE_COCOA
+ #define GLFW_EXPOSE_NATIVE_NSGL
+#elif defined(__linux__)
+ #define GLFW_EXPOSE_NATIVE_X11
+ #define GLFW_EXPOSE_NATIVE_GLX
+#endif
+
+#include <GLFW/glfw3.h>
+#include <GLFW/glfw3native.h>
+
+#include "glm/glm.hpp"
 #include "stdio.h"
 #include "stdlib.h"
 #include <iostream>
@@ -42,7 +57,7 @@ private:
     GLFWwindow* _window;
     const char* _windowTitle;
     int _frame; // curret frame - used for calculating ms/frame
-    
+
     // Window size
     int _width;
     int _height;

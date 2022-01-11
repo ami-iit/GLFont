@@ -1,8 +1,54 @@
 #include "GLWindow.h"
+#include <stdexcept>
+
+void errorCallback(int error, const char* description) {
+    // not implemented
+}
+
+void resizeCallback(GLFWwindow* window, int width, int height) {
+    GLWindow* instance = (GLWindow*)glfwGetWindowUserPointer(window);
+    instance->setWidth(width);
+    instance->setHeight(height);
+    instance->onResize(width, height);
+}
+
+void framebufferCallback(GLFWwindow* window, int width, int height) {
+    glViewport(0, 0, width, height);
+}
+
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    GLWindow* instance = (GLWindow*)glfwGetWindowUserPointer(window);
+    instance->onKey(key, scancode, action, mods);
+}
+
+void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+    GLWindow* instance = (GLWindow*)glfwGetWindowUserPointer(window);
+    instance->onMouseButton(button, action, mods);
+}
+
+void mouseMoveCallback(GLFWwindow* window, double x, double y) {
+    GLWindow* instance = (GLWindow*)glfwGetWindowUserPointer(window);
+    instance->onMouseMove(x, y);
+}
+
+void cursorEnterCallback(GLFWwindow* window, int enter) {
+    GLWindow* instance = (GLWindow*)glfwGetWindowUserPointer(window);
+    instance->onMouseEnter(enter);
+}
+
+void characterCallback(GLFWwindow* window, unsigned int codepoint) {
+    GLWindow* instance = (GLWindow*)glfwGetWindowUserPointer(window);
+    instance->onCharacter(codepoint);
+}
+
+void scrollCallback(GLFWwindow* window, double x, double y) {
+    GLWindow* instance = (GLWindow*)glfwGetWindowUserPointer(window);
+    instance->onScroll(x, y);
+}
 
 GLWindow::GLWindow() {
     if (!glfwInit()) {
-        throw std::exception("Failed to initialize GLFW\n");
+        throw std::runtime_error("Failed to initialize GLFW\n");
     }
     glfwWindowHint(GLFW_SAMPLES, 4); //4x antialiasing
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // Opengl 3.3
@@ -31,7 +77,7 @@ void GLWindow::run() {
     _window = glfwCreateWindow(_width, _height, _windowTitle, NULL, NULL);
     if(_window == NULL) {
         glfwTerminate();
-        throw std::exception("Failed to open GLFW window");
+        throw std::runtime_error("Failed to open GLFW window");
     }
 
     glfwMakeContextCurrent(_window);
@@ -39,7 +85,7 @@ void GLWindow::run() {
     // Initialize glew
     glewExperimental = true;
     if(glewInit() != GLEW_OK) {
-        throw std::exception("Failed to initialize GLEW");
+        throw std::runtime_error("Failed to initialize GLEW");
     }
 
     glfwSetInputMode(_window, GLFW_STICKY_KEYS, GL_TRUE);
@@ -85,51 +131,6 @@ void GLWindow::run() {
 
 GLFWwindow* GLWindow::getWindowHandle() {
     return _window;
-}
-
-void errorCallback(int error, const char* description) {
-    // not implemented
-}
-
-void resizeCallback(GLFWwindow* window, int width, int height) {
-    GLWindow* instance = (GLWindow*)glfwGetWindowUserPointer(window);
-    instance->setWidth(width);
-    instance->setHeight(height);
-    instance->onResize(width, height);
-}
-
-void framebufferCallback(GLFWwindow* window, int width, int height) {
-    glViewport(0, 0, width, height);
-}
-
-void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-    GLWindow* instance = (GLWindow*)glfwGetWindowUserPointer(window);
-    instance->onKey(key, scancode, action, mods);
-}
-
-void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
-    GLWindow* instance = (GLWindow*)glfwGetWindowUserPointer(window);
-    instance->onMouseButton(button, action, mods);
-}
-
-void mouseMoveCallback(GLFWwindow* window, double x, double y) {
-    GLWindow* instance = (GLWindow*)glfwGetWindowUserPointer(window);
-    instance->onMouseMove(x, y);
-}
-
-void cursorEnterCallback(GLFWwindow* window, int enter) {
-    GLWindow* instance = (GLWindow*)glfwGetWindowUserPointer(window);
-    instance->onMouseEnter(enter);
-}
-
-void characterCallback(GLFWwindow* window, unsigned int codepoint) {
-    GLWindow* instance = (GLWindow*)glfwGetWindowUserPointer(window);
-    instance->onCharacter(codepoint);
-}
-
-void scrollCallback(GLFWwindow* window, double x, double y) {
-    GLWindow* instance = (GLWindow*)glfwGetWindowUserPointer(window);
-    instance->onScroll(x, y);
 }
 
 void GLWindow::onKey(int key, int scancode, int action, int mods) {}

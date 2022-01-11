@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.14)
 project(GLFont VERSION 0.0.1 LANGUAGES C CXX)
 
 find_package(YCM REQUIRED)
-find_package(GLFW3 REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(glm REQUIRED)
 ## This is to select the newest version of OpenGL
@@ -112,7 +111,7 @@ add_library(${PROJECT_NAME} ${${PROJECT_NAME}_HDR} ${${PROJECT_NAME}_SRC})
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
                                                   "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}>")
 
-target_link_libraries(${PROJECT_NAME} PUBLIC glfw PkgConfig::freetype2 OpenGL::GL glm::glm)
+target_link_libraries(${PROJECT_NAME} PUBLIC GLEW::GLEW PkgConfig::freetype2 OpenGL::GL glm::glm)
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_14)
 
@@ -158,12 +157,5 @@ add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 include(AddUninstallTarget)
 
 if(BUILD_TESTING)
-#    add_subdirectory(test)
+    add_subdirectory(test)
 endif()
-
-#add_executable(gl-freetype src/main.cpp)
-#target_link_libraries(gl-freetype glfw PkgConfig::freetype2  OpenGL::GL)
-
-#add_executable(string-test src/stringTest.cpp)
-#target_link_libraries(string-test GLEW::GLEW glfw PkgConfig::freetype2  OpenGL::GL)
-
