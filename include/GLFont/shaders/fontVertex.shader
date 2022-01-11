@@ -1,3 +1,4 @@
+R"(
 #version 330 core
 
 layout(location = 0) in vec4 uv;
@@ -8,3 +9,4 @@ void main() {
     gl_Position = mvp * vec4 (uv.xy, 0, 1);
     texcoord = uv.zw;
 }
+)"

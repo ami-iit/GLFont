@@ -100,13 +100,19 @@ set (${PROJECT_NAME}_HDR
     include/GLFont/GLUtils.h
     include/GLFont/GLConfig.h)
 
+set (${PROJECT_NAME}_SHADERS
+    include/GLFont/shaders/fontFragment.shader
+    include/GLFont/shaders/fontVertex.shader)
+
 set (${PROJECT_NAME}_SRC
     src/FTLabel.cpp
     src/FontAtlas.cpp
     src/GLFont.cpp
     src/GLUtils.cpp)
 
-add_library(${PROJECT_NAME} ${${PROJECT_NAME}_HDR} ${${PROJECT_NAME}_SRC})
+source_group("Shader Files" FILES ${${PROJECT_NAME}_SHADERS})
+
+add_library(${PROJECT_NAME} ${${PROJECT_NAME}_HDR} ${${PROJECT_NAME}_SHADERS} ${${PROJECT_NAME}_SRC})
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
                                                   "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}>")
@@ -130,6 +136,8 @@ add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 #  ARCHIVE          DESTINATION "${CMAKE_INSTALL_LIBDIR}"                      COMPONENT lib
 #  RUNTIME          DESTINATION "${CMAKE_INSTALL_BINDIR}"                      COMPONENT bin
 #  PUBLIC_HEADER    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/" COMPONENT dev)
+
+#install(FILES ${PROJECT_NAME}_SHADERS DESTINATION "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}/shaders")
 
 # Create and install CMake configuration files for your project that are
 # necessary to for other projects to call find_package(LibTemplateCMake).

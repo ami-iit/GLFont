@@ -55,8 +55,17 @@ FTLabel::FTLabel(std::shared_ptr<GLFont> ftFace, int windowWidth, int windowHeig
 
     // Load the shaders
     _programId = glCreateProgram();
-    GLUtils::loadShader("shaders/fontVertex.shader", GL_VERTEX_SHADER, _programId);
-    GLUtils::loadShader("shaders/fontFragment.shader", GL_FRAGMENT_SHADER, _programId);
+
+    const std::string fontVertexSource =
+        #include <GLFont/shaders/fontVertex.shader>
+        ;
+
+    const std::string fontFragmentSource =
+        #include <GLFont/shaders/fontFragment.shader>
+        ;
+
+    GLUtils::loadShader(fontVertexSource, GL_VERTEX_SHADER, _programId);
+    GLUtils::loadShader(fontFragmentSource, GL_FRAGMENT_SHADER, _programId);
 
     glUseProgram(_programId);
 

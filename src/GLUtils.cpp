@@ -16,25 +16,10 @@ void GLUtils::loadShader(const std::string& shaderSource, GLenum shaderType, GLu
     GLint result = GL_FALSE; // compilation result
     int infoLogLength; // length of info log
 
-    std::ifstream shaderFile(shaderSource);
-    std::string shaderStr;
     const char* shader;
-
-    if(!shaderFile.is_open()) {
-        std::string error = "Error: could not read file ";
-        throw std::runtime_error(error.append(shaderSource).c_str());
-    }
-
-    // Read shader
-    std::string buffer;
-    while(std::getline(shaderFile, buffer)) {
-        shaderStr += buffer + "\n";
-    }
-
-    shader = shaderStr.c_str();
+    shader = shaderSource.c_str();
 
     // Compile shader
-    printf("Compiling shader\n");
     glShaderSource(shaderId,        // Shader handle
         1,               // Number of files
         &shader,  // Shader source code
@@ -45,11 +30,11 @@ void GLUtils::loadShader(const std::string& shaderSource, GLenum shaderType, GLu
     glGetShaderiv(shaderId, GL_COMPILE_STATUS, &result);
     glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &infoLogLength);
     std::vector<char> errorMessage(std::max(infoLogLength, int(1)));
-    glGetShaderInfoLog(shaderId, infoLogLength, NULL, &errorMessage[0]);
-    fprintf(stdout, "%s\n", &errorMessage[0]);
+    glGetShaderInfoLog(shaderId, infoLogLength, NULL, errorMessage.data());
+    if (errorMessage[0] != '\0')
+        fprintf(stdout, "Error while compiling shader: %s\n", errorMessage.data());
 
     // Link the program
-    fprintf(stdout, "Linking program\n");
     glAttachShader(programId, shaderId);
     glLinkProgram(programId);
 
@@ -57,10 +42,9 @@ void GLUtils::loadShader(const std::string& shaderSource, GLenum shaderType, GLu
     glGetProgramiv(programId, GL_LINK_STATUS, &result);
     glGetProgramiv(programId, GL_INFO_LOG_LENGTH, &infoLogLength);
     std::vector<char> programErrorMessage(std::max(infoLogLength, int(1)));
-    glGetProgramInfoLog(programId, infoLogLength, NULL, &programErrorMessage[0]);
-    fprintf(stdout, "%s\n", &programErrorMessage[0]);
+    glGetProgramInfoLog(programId, infoLogLength, NULL, programErrorMessage.data());
+    if (programErrorMessage[0] != '\0')
+        fprintf(stdout, "Program error message: %s\n", programErrorMessage.data());
 
     glDeleteShader(shaderId);
-
-    shaderFile.close();
 }
