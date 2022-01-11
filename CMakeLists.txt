@@ -129,38 +129,31 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 ## Specify installation targets, typology and destination folders.
-#install(TARGETS    ${PROJECT_NAME}
-#  EXPORT           ${PROJECT_NAME}Targets
-#  COMPONENT        runtime
-#  LIBRARY          DESTINATION "${CMAKE_INSTALL_LIBDIR}"                      COMPONENT shlib
-#  ARCHIVE          DESTINATION "${CMAKE_INSTALL_LIBDIR}"                      COMPONENT lib
-#  RUNTIME          DESTINATION "${CMAKE_INSTALL_BINDIR}"                      COMPONENT bin
-#  PUBLIC_HEADER    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/" COMPONENT dev)
+install(TARGETS    ${PROJECT_NAME}
+  EXPORT           ${PROJECT_NAME}Targets
+  COMPONENT        runtime
+  LIBRARY          DESTINATION "${CMAKE_INSTALL_LIBDIR}"                      COMPONENT shlib
+  ARCHIVE          DESTINATION "${CMAKE_INSTALL_LIBDIR}"                      COMPONENT lib
+  RUNTIME          DESTINATION "${CMAKE_INSTALL_BINDIR}"                      COMPONENT bin
+  PUBLIC_HEADER    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/" COMPONENT dev)
 
-#install(FILES ${PROJECT_NAME}_SHADERS DESTINATION "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}/shaders")
+install(FILES ${${PROJECT_NAME}_SHADERS} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/shaders")
 
-# Create and install CMake configuration files for your project that are
-# necessary to for other projects to call find_package(LibTemplateCMake).
-#
-# Note that it is extremely important to use exactly the project name while
-# installing configuration files (you can use PROJECT_NAME variable to avoid
-# any possible error). This is required to allow find_package() to properly
-# look for the installed library in system path, in particular in Windows when
-# the installation is performed in the default path.
-#
-# install_basic_package_files() comes with many input parameters to customize
-# the configuration files. The parameters used in the following call provide
-# basic versions of CMake configuration files.
-# See install_basic_package_files() documentation found in ./cmake folder.
-#
-# Note that if your library depends from other libraries, you are probably
-# required to used the install_basic_package_files() DEPENDENCIES option.
-#include(InstallBasicPackageFiles)
-#install_basic_package_files(${PROJECT_NAME}
-#                            VERSION ${${PROJECT_NAME}_VERSION}
-#                            COMPATIBILITY AnyNewerVersion
-#                            VARS_PREFIX ${PROJECT_NAME}
-#                            NO_CHECK_REQUIRED_COMPONENTS_MACRO)
+include(CMakePackageConfigHelpers)
+
+install(EXPORT ${PROJECT_NAME}Targets
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+        NAMESPACE ${PROJECT_NAME}::)
+
+configure_package_config_file(${CMAKE_SOURCE_DIR}/cmake/GLFontConfig.cmake.in
+                              ${CMAKE_BINARY_DIR}/GLFontConfig.cmake
+                              INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
+
+write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/GLFontConfigVersion.cmake VERSION ${${PROJECT_NAME}_VERSION} COMPATIBILITY SameMajorVersion )
+
+install(FILES ${CMAKE_BINARY_DIR}/GLFontConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/GLFontConfigVersion.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
+
+
 # Add the uninstall target
 include(AddUninstallTarget)
 
