@@ -56,7 +56,9 @@ protected:
 private:
     GLFWwindow* _window;
     const char* _windowTitle;
-    int _frame; // curret frame - used for calculating ms/frame
+    int _frame = 0; // curret frame - used for calculating ms/frame
+    GLuint _labelFrameBuffer = 0;
+    GLuint _labelTexture = 0;
 
     // Window size
     int _width;

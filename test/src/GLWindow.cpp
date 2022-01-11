@@ -102,6 +102,23 @@ void GLWindow::run() {
     glfwSetCharCallback(_window, characterCallback);
     glfwSetScrollCallback(_window, scrollCallback);
 
+
+    glGenFramebuffers(1, &_labelFrameBuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, _labelFrameBuffer);
+    glGenTextures(1, &_labelTexture);
+
+    //Trying to preallocate texture for read frame buffer
+    glBindTexture(GL_TEXTURE_2D, _labelTexture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                           GL_TEXTURE_2D, _labelTexture, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _width, _height, 0,
+        GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
     init();
 
     double lastTime = glfwGetTime();
@@ -117,16 +134,31 @@ void GLWindow::run() {
             lastTime += 2.0f;
         }
 
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
         // Render scene
-        glClearColor(0.0, 0.0, 0.0, 1.0);
+        glClearColor(0.0, 0.0, 0.0, 0.0);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, _labelFrameBuffer);
+        glBindTexture(GL_TEXTURE_2D, _labelTexture);
+        glClearColor(0.0, 0.0, 0.0, 0.0);
         glClear(GL_COLOR_BUFFER_BIT);
 
         update();
         render();
 
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        glBlitNamedFramebuffer(_labelFrameBuffer, 0,
+                               0, 0, _width, _height,
+                               0, 0, _width, _height,
+                               GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
         // Swap buffers
         glfwSwapBuffers(_window);
     }
+
+    glDeleteFramebuffers(1, &(_labelFrameBuffer));
 }
 
 GLFWwindow* GLWindow::getWindowHandle() {
@@ -135,7 +167,18 @@ GLFWwindow* GLWindow::getWindowHandle() {
 
 void GLWindow::onKey(int key, int scancode, int action, int mods) {}
 
-void GLWindow::onResize(int width, int height) {}
+void GLWindow::onResize(int width, int height) {
+    _width = width;
+    _height = height;
+    glBindFramebuffer(GL_FRAMEBUFFER, _labelFrameBuffer);
+
+    //Trying to preallocate texture for read frame buffer
+    glBindTexture(GL_TEXTURE_2D, _labelTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _width, _height, 0,
+        GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+}
 
 void GLWindow::onMouseButton(int button, int action, int mods) {}
 

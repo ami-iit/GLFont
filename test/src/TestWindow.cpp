@@ -61,6 +61,7 @@ void TestWindow::onResize(int width, int height) {
 
     lblParagraph->setSize(width, 0);
     lblParagraph->setPosition(0, 0.6 * height);
+    GLWindow::onResize(width, height);
 }
 
 void TestWindow::onMouseMove(double x, double y) {}
