@@ -2,16 +2,23 @@
 #define GLFONT_H
 
 #include <GLFont/GLConfig.h>
+#include <GLFont/FTLabel.h>
 #include <string>
 
 class GLFont {
 public:
-    GLFont(const char* fontFile);
+    GLFont(const std::string& fontFile);
     ~GLFont();
 
     void setFontFile(const std::string& fontFile);
 
     FT_Face getFaceHandle();
+
+    static inline std::string DefaultFontsPathPrefix()
+    {
+        return std::string(GLFont_DEFAULT_FONTS_PATH) + "/";
+    }
+
 
 private:
     std::string _fontFile;

@@ -2,7 +2,7 @@
 #include <fstream>
 #include <stdexcept>
 
-GLFont::GLFont(const char* fontFile) {
+GLFont::GLFont(const std::string &fontFile) {
     // Initialize FreeType
 
     _error = FT_Init_FreeType(&_ft);

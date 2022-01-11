@@ -1,6 +1,7 @@
 #include <GLFont/FTLabel.h>
 #include <GLFont/GLUtils.h>
 #include <GLFont/FontAtlas.h>
+#include <GLFont/GLFont.h>
 
 #include <stdio.h>
 #include <vector>

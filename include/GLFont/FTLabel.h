@@ -1,13 +1,14 @@
 #ifndef GLFONT_FTLABEL_H
 #define GLFONT_FTLABEL_H
 
-#include <GLFont/GLFont.h>
+#include <GLFont/GLConfig.h>
 
 #include <memory> // for use of shared_ptr
 #include <map>
 #include <vector>
 
 class FontAtlas;
+class GLFont;
 
 class FTLabel {
 public:
