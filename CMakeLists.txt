@@ -9,8 +9,7 @@ if (POLICY CMP0072)
   cmake_policy (SET CMP0072 NEW)
 endif(POLICY CMP0072)
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(freetype2 REQUIRED IMPORTED_TARGET freetype2)
+find_package(Freetype REQUIRED)
 
 find_package(OpenGL REQUIRED)
 
@@ -117,7 +116,7 @@ add_library(${PROJECT_NAME} ${${PROJECT_NAME}_HDR} ${${PROJECT_NAME}_SHADERS} ${
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
                                                   "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}>")
 
-target_link_libraries(${PROJECT_NAME} PUBLIC GLEW::GLEW PkgConfig::freetype2 OpenGL::GL glm)
+target_link_libraries(${PROJECT_NAME} PUBLIC GLEW::GLEW Freetype::Freetype OpenGL::GL glm)
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_14)
 
