@@ -62,6 +62,8 @@ public:
     float getRotation();
     int getIndentation();
     int getFontFlags();
+    int getCurrentLabelHeight();
+    int getCurrentLabelWidth();
 
     // Print the specified text on the screen starting at coords x, y
     // NOTE: params x and y should be x and y offsets in **window** coordinates (0, 0 is at the top left corner)
@@ -120,6 +122,8 @@ private:
     // Label dimensions
     int _maxWidth;
     int _maxHeight;
+    int _actualHeight;
+    int _actualWidth;
 
     // Used to scale x and y coords
     // Note: sx and sy are chosen so that one glyph pixel corresponds to one screen pixel

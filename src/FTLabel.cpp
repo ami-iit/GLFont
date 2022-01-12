@@ -33,7 +33,9 @@ FTLabel::FTLabel(std::shared_ptr<GLFont> ftFace, int windowWidth, int windowHeig
   _x(0),
   _y(0),
   _maxWidth(0),
-  _maxHeight(0)
+  _maxHeight(0),
+  _actualHeight(0),
+  _actualWidth(0)
 {
     setFont(ftFace);
     setWindowSize(windowWidth, windowHeight);
@@ -167,6 +169,8 @@ void FTLabel::recalculateVertices(const std::string& text, float x, float y, int
 
     // Print each line, increasing the y value as we go
     float startY = y - (_face->size->metrics.height >> 6);
+    int lineWidth;
+    _actualWidth = 0;
     for(const std::string &line : lines) {
         // If we go past the specified height, stop drawing
         if(y - startY > maxHeight && maxHeight)
@@ -175,7 +179,14 @@ void FTLabel::recalculateVertices(const std::string& text, float x, float y, int
         recalculateVertices(line.c_str(), x + indent, y);
         y += (_face->size->metrics.height >> 6);
         indent = 0;
+
+        lineWidth = calcWidth(line.c_str());
+        if (lineWidth > _actualWidth)
+            _actualWidth = lineWidth;
     }
+
+    _actualHeight = y - startY;
+
     glUseProgram(_programId);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -397,6 +408,24 @@ void FTLabel::appendFontFlags(int flags) {
 
 int FTLabel::getFontFlags() {
     return _flags;
+}
+
+int FTLabel::getCurrentLabelHeight()
+{
+    if(_text != "") {
+        recalculateVertices(_text, _x, _y, _maxWidth, _maxHeight);
+    }
+
+    return _actualHeight;
+}
+
+int FTLabel::getCurrentLabelWidth()
+{
+    if(_text != "") {
+        recalculateVertices(_text, _x, _y, _maxWidth, _maxHeight);
+    }
+
+    return _actualWidth;
 }
 
 void FTLabel::setIndentation(int pixels) {
