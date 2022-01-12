@@ -134,13 +134,13 @@ void GLWindow::run() {
             lastTime += 2.0f;
         }
 
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
         // Render scene
         glClearColor(0.0, 0.0, 0.0, 0.0);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glBindFramebuffer(GL_FRAMEBUFFER, _labelFrameBuffer);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _labelFrameBuffer);
         glBindTexture(GL_TEXTURE_2D, _labelTexture);
         glClearColor(0.0, 0.0, 0.0, 0.0);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -148,11 +148,12 @@ void GLWindow::run() {
         update();
         render();
 
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
         glBlitNamedFramebuffer(_labelFrameBuffer, 0,
                                0, 0, _width, _height,
                                0, 0, _width, _height,
                                GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
         // Swap buffers
         glfwSwapBuffers(_window);
@@ -170,7 +171,7 @@ void GLWindow::onKey(int key, int scancode, int action, int mods) {}
 void GLWindow::onResize(int width, int height) {
     _width = width;
     _height = height;
-    glBindFramebuffer(GL_FRAMEBUFFER, _labelFrameBuffer);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _labelFrameBuffer);
 
     //Trying to preallocate texture for read frame buffer
     glBindTexture(GL_TEXTURE_2D, _labelTexture);

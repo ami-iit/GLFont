@@ -121,7 +121,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC GLEW::GLEW PkgConfig::freetype2 Ope
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_14)
 
-target_compile_definitions(${PROJECT_NAME} PUBLIC GLFont_DEFAULT_FONTS_PATH="${CMAKE_SOURCE_DIR}/fonts")
+target_compile_definitions(${PROJECT_NAME} PUBLIC GLFont_DEFAULT_FONTS_PATH="${CMAKE_CURRENT_LIST_DIR}/fonts")
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
   OUTPUT_NAME ${PROJECT_NAME}
