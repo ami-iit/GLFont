@@ -3,7 +3,7 @@ project(GLFont VERSION 0.0.1 LANGUAGES C CXX)
 
 find_package(YCM REQUIRED)
 find_package(GLEW REQUIRED)
-find_package(glm REQUIRED)
+find_package(GLM REQUIRED)
 ## This is to select the newest version of OpenGL
 if (POLICY CMP0072)
   cmake_policy (SET CMP0072 NEW)
@@ -117,7 +117,7 @@ add_library(${PROJECT_NAME} ${${PROJECT_NAME}_HDR} ${${PROJECT_NAME}_SHADERS} ${
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
                                                   "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}>")
 
-target_link_libraries(${PROJECT_NAME} PUBLIC GLEW::GLEW PkgConfig::freetype2 OpenGL::GL glm::glm)
+target_link_libraries(${PROJECT_NAME} PUBLIC GLEW::GLEW PkgConfig::freetype2 OpenGL::GL glm)
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_14)
 
