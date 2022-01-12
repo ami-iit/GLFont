@@ -6,6 +6,7 @@
 #include <memory> // for use of shared_ptr
 #include <map>
 #include <vector>
+#include <string>
 
 class FontAtlas;
 class GLFont;

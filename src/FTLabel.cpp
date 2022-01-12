@@ -13,6 +13,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/transform.hpp>
 
+#define _USE_MATH_DEFINES
 #include <cmath>
 
 #ifndef RAD_TO_DEG
