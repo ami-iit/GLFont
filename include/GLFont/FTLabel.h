@@ -1,6 +1,9 @@
 #ifndef GLFONT_FTLABEL_H
 #define GLFONT_FTLABEL_H
 
+#define _USE_MATH_DEFINES
+#include <cmath>
+
 #include <GLFont/GLConfig.h>
 
 #include <memory> // for use of shared_ptr
