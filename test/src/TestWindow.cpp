@@ -58,7 +58,7 @@ void TestWindow::onResize(int width, int height) {
     // Update label positions
     lblHello->setPosition(0.5 * width, 0.5 * height);
 
-    lblParagraph->setSize(width, 0);
+    lblParagraph->setMaxSize(width, 0);
     lblParagraph->setPosition(0, 0.6 * height);
     GLWindow::onResize(width, height);
 }

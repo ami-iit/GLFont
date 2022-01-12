@@ -32,8 +32,8 @@ FTLabel::FTLabel(std::shared_ptr<GLFont> ftFace, int windowWidth, int windowHeig
   _indentationPix(0),
   _x(0),
   _y(0),
-  _width(0),
-  _height(0)
+  _maxWidth(0),
+  _maxHeight(0)
 {
     setFont(ftFace);
     setWindowSize(windowWidth, windowHeight);
@@ -105,13 +105,13 @@ FTLabel::FTLabel(GLFont* ftFace, int windowWidth, int windowHeight) :
   FTLabel(std::shared_ptr<GLFont>(new GLFont(*ftFace)), windowWidth, windowHeight)
 {}
 
-FTLabel::FTLabel(std::shared_ptr<GLFont> ftFace, const std::string& text, float x, float y, int width, int height, int windowWidth, int windowHeight) :
+FTLabel::FTLabel(std::shared_ptr<GLFont> ftFace, const std::string& text, float x, float y, int maxWidth, int maxHeight, int windowWidth, int windowHeight) :
   FTLabel(ftFace, text, x, y, windowWidth, windowHeight)
 {
-    _width = width;
-    _height = height;
+    _maxWidth = maxWidth;
+    _maxHeight = maxHeight;
 
-    recalculateVertices(text, x, y, width, height);
+    recalculateVertices(text, x, y, maxWidth, maxHeight);
 }
 
 FTLabel::FTLabel(std::shared_ptr<GLFont> ftFace, const std::string &text, float x, float y, int windowWidth, int windowHeight) :
@@ -127,7 +127,7 @@ FTLabel::~FTLabel() {
     glDeleteVertexArrays(1, &_vao);
 }
 
-void FTLabel::recalculateVertices(const std::string& text, float x, float y, int width, int height) {
+void FTLabel::recalculateVertices(const std::string& text, float x, float y, int maxWidth, int maxHeight) {
 
     _coords.clear(); // case there are any existing coords
 
@@ -135,7 +135,7 @@ void FTLabel::recalculateVertices(const std::string& text, float x, float y, int
     std::vector<std::string> words = splitText(_text);
 
     std::vector<std::string> lines;
-    int widthRemaining = width;
+    int widthRemaining = maxWidth;
     int spaceWidth = calcWidth(" ");
     int indent = (_flags & FontFlags::Indented) && _alignment != FontFlags::CenterAligned ? _pixelSize : 0;
 
@@ -144,11 +144,11 @@ void FTLabel::recalculateVertices(const std::string& text, float x, float y, int
     for(const std::string &word : words) {
         int wordWidth = calcWidth(word.c_str());
 
-        if(wordWidth - spaceWidth > widthRemaining && width /* make sure there is a width specified */) {
+        if(wordWidth - spaceWidth > widthRemaining && maxWidth /* make sure there is a width specified */) {
 
             // If we have passed the given width, add this line to our collection and start a new line
             lines.push_back(curLine);
-            widthRemaining = width - wordWidth;
+            widthRemaining = maxWidth - wordWidth;
             curLine = "";
 
             // Start next line with current word
@@ -169,7 +169,7 @@ void FTLabel::recalculateVertices(const std::string& text, float x, float y, int
     float startY = y - (_face->size->metrics.height >> 6);
     for(const std::string &line : lines) {
         // If we go past the specified height, stop drawing
-        if(y - startY > height && height)
+        if(y - startY > maxHeight && maxHeight)
             break;
 
         recalculateVertices(line.c_str(), x + indent, y);
@@ -346,7 +346,7 @@ int FTLabel::calcWidth(const char* text) {
 void FTLabel::setText(const std::string& text) {
     _text = text;
 
-    recalculateVertices(_text, _x, _y, _width, _height);
+    recalculateVertices(_text, _x, _y, _maxWidth, _maxHeight);
 }
 
 std::string FTLabel::getText() {
@@ -358,7 +358,7 @@ void FTLabel::setPosition(float x, float y) {
     _y = y;
 
     if(_text != "") {
-        recalculateVertices(_text, _x, _y, _width, _height);
+        recalculateVertices(_text, _x, _y, _maxWidth, _maxHeight);
     }
 }
 
@@ -370,9 +370,9 @@ float FTLabel::getY() {
     return _y;
 }
 
-void FTLabel::setSize(int width, int height) {
-    _width = width;
-    _height = height;
+void FTLabel::setMaxSize(int width, int height) {
+    _maxWidth = width;
+    _maxHeight = height;
 
     if(_text != "") {
         recalculateVertices(_text, _x, _y, width, height);
@@ -380,11 +380,11 @@ void FTLabel::setSize(int width, int height) {
 }
 
 int FTLabel::getWidth() {
-    return _width;
+    return _maxWidth;
 }
 
 int FTLabel::getHeight() {
-    return _height;
+    return _maxHeight;
 }
 
 void FTLabel::setFontFlags(int flags) {
@@ -435,7 +435,7 @@ void FTLabel::setAlignment(FTLabel::FontFlags alignment) {
     _alignment = alignment;
 
     if(_isInitialized) {
-        recalculateVertices(_text, _x, _y, _width, _height);
+        recalculateVertices(_text, _x, _y, _maxWidth, _maxHeight);
     }
 }
 
@@ -468,7 +468,7 @@ void FTLabel::setPixelSize(int size) {
         _fontAtlas[_pixelSize] = std::shared_ptr<FontAtlas>(new FontAtlas(_face, _pixelSize));
 
     if(_isInitialized) {
-        recalculateVertices(_text, _x, _y, _width, _height);
+        recalculateVertices(_text, _x, _y, _maxWidth, _maxHeight);
     }
 }
 
@@ -481,7 +481,7 @@ void FTLabel::setWindowSize(int width, int height) {
     _sy = 2.0 / _windowHeight;
 
     if(_isInitialized) {
-        recalculateVertices(_text, _x, _y, _width, _height);
+        recalculateVertices(_text, _x, _y, _maxWidth, _maxHeight);
     }
 }
 

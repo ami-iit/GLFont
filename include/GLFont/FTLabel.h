@@ -27,7 +27,7 @@ public:
     // Ctor takes a pointer to a font face
     FTLabel(std::shared_ptr<GLFont> ftFace, int windowWidth, int windowHeight);
     FTLabel(GLFont* ftFace, int windowWidth, int windowHeight);
-    FTLabel(std::shared_ptr<GLFont> ftFace, const std::string& text, float x, float y, int width, int height, int windowWidth, int windowHeight);
+    FTLabel(std::shared_ptr<GLFont> ftFace, const std::string& text, float x, float y, int maxWidth, int maxHeight, int windowWidth, int windowHeight);
     FTLabel(std::shared_ptr<GLFont> ftFace, const std::string& text, float x, float y, int windowWidth, int windowHeight);
     ~FTLabel();
 
@@ -41,7 +41,7 @@ public:
     // Setters
     void setText(const std::string &text);
     void setPosition(float x, float y);
-    void setSize(int width, int height);
+    void setMaxSize(int width, int height);
     void setFont(std::shared_ptr<GLFont> ftFace);
     void setColor(float r, float b, float g, float a); // RGBA values are 0 - 1.0
     void setAlignment(FontFlags alignment);
@@ -118,8 +118,8 @@ private:
     int _y;
 
     // Label dimensions
-    int _width;
-    int _height;
+    int _maxWidth;
+    int _maxHeight;
 
     // Used to scale x and y coords
     // Note: sx and sy are chosen so that one glyph pixel corresponds to one screen pixel
@@ -160,7 +160,7 @@ private:
     int calcWidth(const char* text);
 
     // Calculate vertices for a paragraph label
-    void recalculateVertices(const std::string &text, float x, float y, int width, int height);
+    void recalculateVertices(const std::string &text, float x, float y, int maxWidth, int maxHeight);
     // Calculate vertices without regards to width or height boundaries
     void recalculateVertices(const char* text, float x, float y);
 
