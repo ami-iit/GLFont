@@ -147,7 +147,7 @@ install(EXPORT ${PROJECT_NAME}Targets
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
         NAMESPACE ${PROJECT_NAME}::)
 
-configure_package_config_file(${CMAKE_SOURCE_DIR}/cmake/GLFontConfig.cmake.in
+configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/cmake/GLFontConfig.cmake.in
                               ${CMAKE_BINARY_DIR}/GLFontConfig.cmake
                               INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 
