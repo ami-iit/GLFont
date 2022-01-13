@@ -362,7 +362,7 @@ std::string FTLabel::getText() {
     return std::string(_text);
 }
 
-void FTLabel::setPosition(int x, int y) {
+void FTLabel::setPosition(float x, float y) {
     _x = x;
     _y = y;
 
@@ -371,11 +371,11 @@ void FTLabel::setPosition(int x, int y) {
     }
 }
 
-int FTLabel::getX() {
+float FTLabel::getX() {
     return _x;
 }
 
-int FTLabel::getY() {
+float FTLabel::getY() {
     return _y;
 }
 
@@ -452,6 +452,10 @@ glm::vec4 FTLabel::getColor() {
 void FTLabel::setFont(std::shared_ptr<GLFont> ftFace) {
     _ftFace = ftFace;
     _face = _ftFace->getFaceHandle(); // shortcut
+}
+
+char* FTLabel::getFont() {
+    return _font;
 }
 
 void FTLabel::setAlignment(FTLabel::FontFlags alignment) {

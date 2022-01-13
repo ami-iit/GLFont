@@ -44,7 +44,7 @@ public:
 
     // Setters
     void setText(const std::string &text);
-    void setPosition(int x, int y);
+    void setPosition(float x, float y);
     void setMaxSize(int width, int height);
     void setFont(std::shared_ptr<GLFont> ftFace);
     void setColor(float r, float b, float g, float a); // RGBA values are 0 - 1.0
@@ -56,10 +56,11 @@ public:
 
     // Getters
     std::string getText();
-    int getX();
-    int getY();
+    float getX();
+    float getY();
     int getWidth();
     int getHeight();
+    char* getFont();
     glm::vec4 getColor();
     FontFlags getAlignment();
     float getRotation();
@@ -80,10 +81,10 @@ public:
 private:
 
     struct Point {
-        GLfloat x{0.0}; // x offset in window coordinates
-        GLfloat y{0.0}; // y offset in window coordinates
-        GLfloat s{0.0}; // glyph x offset in texture coordinates
-        GLfloat t{0.0}; // glyph y offset in texture coordinates
+        GLfloat x; // x offset in window coordinates
+        GLfloat y; // y offset in window coordinates
+        GLfloat s; // glyph x offset in texture coordinates
+        GLfloat t; // glyph y offset in texture coordinates
 
         Point() {}
 
@@ -119,8 +120,8 @@ private:
     int _windowHeight;
 
     // Coordinates at which to start drawing
-    int _x;
-    int _y;
+    float _x;
+    float _y;
 
     // Label dimensions
     int _maxWidth;
@@ -142,6 +143,7 @@ private:
     glm::mat4 _model;
     glm::mat4 _mvp;
 
+    char* _font; // file path to font file
     glm::vec4 _textColor; // RGBA value we will use to color the font (0.0 - 1.0)
     FontFlags _alignment;
     int _pixelSize;
