@@ -81,10 +81,10 @@ public:
 private:
 
     struct Point {
-        GLfloat x; // x offset in window coordinates
-        GLfloat y; // y offset in window coordinates
-        GLfloat s; // glyph x offset in texture coordinates
-        GLfloat t; // glyph y offset in texture coordinates
+        GLfloat x{0.0}; // x offset in window coordinates
+        GLfloat y{0.0}; // y offset in window coordinates
+        GLfloat s{0.0}; // glyph x offset in texture coordinates
+        GLfloat t{0.0}; // glyph y offset in texture coordinates
 
         Point() {}
 
@@ -113,7 +113,7 @@ private:
     std::map<int, std::shared_ptr<FontAtlas>> _fontAtlas;
 
     int _flags; // Currently enabled settings set via FontFlags
-    int _numVertices;
+    size_t _numVertices;
 
     // Window dimensions
     int _windowWidth;

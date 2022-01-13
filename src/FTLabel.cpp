@@ -183,7 +183,7 @@ void FTLabel::recalculateVertices(const std::string& text, float x, float y, int
             _actualWidth = lineWidth;
     }
 
-    _actualHeight = y - startY;
+    _actualHeight = static_cast<int>(std::ceil(y - startY));
 
     glUseProgram(_programId);
     glEnable(GL_BLEND);
@@ -320,7 +320,7 @@ void FTLabel::render() {
 
 std::vector<std::string> FTLabel::splitText(const std::string& text) {
     std::vector<std::string> words;
-    int startPos = 0; // start position of current word
+    size_t startPos = 0; // start position of current word
     size_t endPos = text.find(' '); // end position of current word
 
     if(endPos == -1) {
@@ -346,7 +346,7 @@ int FTLabel::calcWidth(const char* text) {
     int width = 0;
     FontAtlas::Character* chars = _fontAtlas[_pixelSize]->getCharInfo();
     for(const char* p = text; *p; ++p) {
-        width += chars[*p].advanceX;
+        width += static_cast<int>(std::ceil(chars[*p].advanceX));
     }
 
     return width;
@@ -479,7 +479,7 @@ void FTLabel::calculateAlignment(const char* text, float &x) {
 
     // Calculate total width
     for(const char* p = text; *p; ++p)
-        totalWidth += chars[*p].advanceX;
+        totalWidth += static_cast<int>(std::ceil(chars[*p].advanceX));
 
     if(_alignment == FTLabel::FontFlags::CenterAligned)
         x -= totalWidth / 2.0;
