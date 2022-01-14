@@ -52,6 +52,7 @@ public:
     void setPixelSize(int size);
     void setIndentation(int pixels);
     void setFontFlags(int flags);
+    void setFontAspectRatio(float aspectRatio);
     void appendFontFlags(int flags);
 
     // Getters
@@ -127,6 +128,10 @@ private:
     float _sx;
     float _sy;
 
+    //Scaling due to aspect ratio
+    float _arsx;
+    float _arsy;
+
     // Dimensions of atlas texture
     int _atlasWidth;
     int _atlasHeight;
@@ -153,8 +158,6 @@ private:
 
     // Compile shader from file
     void loadShader(char* shaderSource, GLenum shaderType);
-    // Calculate offset needed for center- or left-aligned text
-    void calculateAlignment(const char* text, float &x);
     // Split text into words separated by spaces
     std::vector<std::string> splitText(const std::string &text);
     // Returns the width (in pixels) of the string, given the current pixel size

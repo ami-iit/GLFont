@@ -33,7 +33,9 @@ FTLabel::FTLabel(std::shared_ptr<GLFont> ftFace, int windowWidth, int windowHeig
   _maxWidth(0),
   _maxHeight(0),
   _actualHeight(0),
-  _actualWidth(0)
+  _actualWidth(0),
+  _arsx(1.0),
+  _arsy(1.0)
 {
     setFont(ftFace);
     setWindowSize(windowWidth, windowHeight);
@@ -166,7 +168,7 @@ void FTLabel::recalculateVertices(const std::string& text, float x, float y, int
         lines.push_back(curLine);
 
     // Print each line, increasing the y value as we go
-    float startY = y - (_face->size->metrics.height >> 6);
+    float startY = y - (_face->size->metrics.height >> 6) * _arsy;
     int lineWidth;
     _actualWidth = 0;
     for(const std::string &line : lines) {
@@ -175,7 +177,7 @@ void FTLabel::recalculateVertices(const std::string& text, float x, float y, int
             break;
 
         recalculateVertices(line.c_str(), x + indent, y);
-        y += (_face->size->metrics.height >> 6);
+        y += (_face->size->metrics.height >> 6)  * _arsy;
         indent = 0;
 
         lineWidth = calcWidth(line.c_str());
@@ -217,7 +219,7 @@ void FTLabel::recalculateVertices(const char* text, float x, float y) {
 
     // Coordinates passed in should specify where to start drawing from the top left of the text,
     // but FreeType starts drawing from the bottom-right, therefore move down one line
-    y += _face->size->metrics.height >> 6;
+    y += (_face->size->metrics.height >> 6) * _arsy;
 
     // Calculate alignment (if applicable)
     int textWidth = calcWidth(text);
@@ -227,7 +229,7 @@ void FTLabel::recalculateVertices(const char* text, float x, float y) {
         x -= textWidth;
 
     // Normalize window coordinates
-    x = -1 + x * _sx;
+    x = -1 + x * _sx * _arsx;
     y = 1 - y * _sy;
 
 
@@ -237,10 +239,10 @@ void FTLabel::recalculateVertices(const char* text, float x, float y) {
     FontAtlas::Character* chars = _fontAtlas[_pixelSize]->getCharInfo();
 
     for(const char *p = text; *p; ++p) {
-        float x2 = x + chars[*p].bitmapLeft * _sx; // scaled x coord
-        float y2 = -y - chars[*p].bitmapTop * _sy; // scaled y coord
-        float w = chars[*p].bitmapWidth * _sx;     // scaled width of character
-        float h = chars[*p].bitmapHeight * _sy;    // scaled height of character
+        float x2 = x + chars[*p].bitmapLeft * _sx * _arsx; // scaled x coord
+        float y2 = -y - chars[*p].bitmapTop * _sy * _arsy; // scaled y coord
+        float w = chars[*p].bitmapWidth * _sx * _arsx;     // scaled width of character
+        float h = chars[*p].bitmapHeight * _sy * _arsy;    // scaled height of character
 
         // Calculate kerning value
         FT_Vector kerning;
@@ -251,8 +253,8 @@ void FTLabel::recalculateVertices(const char* text, float x, float y) {
                        &kerning);          // variable to store kerning value
 
         // Advance cursor to start of next character
-        x += (chars[*p].advanceX + (kerning.x >> 6)) * _sx;
-        y += chars[*p].advanceY * _sy;
+        x += (chars[*p].advanceX + (kerning.x >> 6)) * _sx * _arsx;
+        y += chars[*p].advanceY * _sy * _arsy;
 
         // Skip glyphs with no pixels (e.g. spaces)
         if(!w || !h)
@@ -349,7 +351,7 @@ int FTLabel::calcWidth(const char* text) {
         width += static_cast<int>(std::ceil(chars[*p].advanceX));
     }
 
-    return width;
+    return width  * _arsx;
 }
 
 void FTLabel::setText(const std::string& text) {
@@ -398,6 +400,24 @@ int FTLabel::getHeight() {
 
 void FTLabel::setFontFlags(int flags) {
     _flags = flags;
+}
+
+void FTLabel::setFontAspectRatio(float aspectRatio)
+{
+    if (aspectRatio >= 1.0)
+    {
+        _arsx = aspectRatio;
+        _arsy = 1.0;
+    }
+    else
+    {
+        _arsx = 1.0;
+        _arsy = 1.0 / aspectRatio;
+    }
+
+    if(_text != "") {
+        recalculateVertices(_text, _x, _y, _maxWidth, _maxHeight);
+    }
 }
 
 void FTLabel::appendFontFlags(int flags) {
@@ -468,23 +488,6 @@ void FTLabel::setAlignment(FTLabel::FontFlags alignment) {
 
 FTLabel::FontFlags FTLabel::getAlignment() {
     return _alignment;
-}
-
-void FTLabel::calculateAlignment(const char* text, float &x) {
-    if(_alignment == FTLabel::FontFlags::LeftAligned)
-        return; // no need to calculate alignment
-
-    int totalWidth = 0; // total width of the text to render in window space
-    FontAtlas::Character* chars = _fontAtlas[_pixelSize]->getCharInfo();
-
-    // Calculate total width
-    for(const char* p = text; *p; ++p)
-        totalWidth += static_cast<int>(std::ceil(chars[*p].advanceX));
-
-    if(_alignment == FTLabel::FontFlags::CenterAligned)
-        x -= totalWidth / 2.0;
-    else if(_alignment == FTLabel::FontFlags::RightAligned)
-        x -= totalWidth;
 }
 
 void FTLabel::setPixelSize(int size) {
