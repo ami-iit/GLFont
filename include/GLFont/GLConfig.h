@@ -9,7 +9,6 @@
 #include <GL/gl.h>
 
 #if defined(__APPLE__) || defined(__linux__)
- #include <GL/glext.h>
  #include <GL/glx.h>
 #endif
 
