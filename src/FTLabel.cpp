@@ -97,6 +97,7 @@ FTLabel::FTLabel(std::shared_ptr<GLFont> ftFace, int windowWidth, int windowHeig
     // Create the vertex buffer object
     glGenBuffers(1, &_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    glBindVertexArray(0);
 
     glUseProgram(0);
 
@@ -187,6 +188,7 @@ void FTLabel::recalculateVertices(const std::string& text, float x, float y, int
 
     _actualHeight = static_cast<int>(std::ceil(y - startY));
 
+    glBindVertexArray(_vao);
     glUseProgram(_programId);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -213,6 +215,8 @@ void FTLabel::recalculateVertices(const std::string& text, float x, float y, int
 
     glDisable(GL_BLEND);
     glUseProgram(0);
+    glBindVertexArray(0);
+
 }
 
 void FTLabel::recalculateVertices(const char* text, float x, float y) {
@@ -294,6 +298,7 @@ void FTLabel::recalculateVertices(const char* text, float x, float y) {
 }
 
 void FTLabel::render() {
+    glBindVertexArray(_vao);
     glUseProgram(_programId);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -318,6 +323,7 @@ void FTLabel::render() {
 
     glDisable(GL_BLEND);
     glUseProgram(0);
+    glBindVertexArray(0);
 }
 
 std::vector<std::string> FTLabel::splitText(const std::string& text) {
