@@ -1,4 +1,4 @@
-find_package(GLFW3 REQUIRED)
+find_package(glfw3 NO_MODULE REQUIRED)
 
 set (TEST_WINDOW_SRC
     src/TestWindow.cpp
