@@ -11,7 +11,7 @@
 
 // GLM
 #include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/transform.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #ifndef RAD_TO_DEG
 #define RAD_TO_DEG 180.0 / M_PI;
@@ -528,7 +528,7 @@ void FTLabel::rotate(float degrees, float x, float y, float z) {
 }
 
 void FTLabel::scale(float x, float y, float z) {
-    _model = glm::scale(glm::vec3(x, y, z));
+    _model = glm::scale(_model, glm::vec3(x, y, z));
     recalculateMVP();
 }
 
